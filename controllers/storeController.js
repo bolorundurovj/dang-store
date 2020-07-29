@@ -12,6 +12,7 @@ exports.addStore = (req, res) => {
 exports.createStore = async (req, res) => {
   const store = new Store(req.body);
   await store.save();
+  res.redirect('/');
   // store
   //   .save()
   //   .then(store => {
@@ -23,5 +24,4 @@ exports.createStore = async (req, res) => {
   //   .catch(err => {
   //     throw Error(err)
   //   })
-  console.log('Store Saved!');
 };
