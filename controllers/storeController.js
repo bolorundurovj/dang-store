@@ -25,3 +25,8 @@ exports.createStore = async (req, res) => {
   //     throw Error(err)
   //   })
 };
+
+exports.getStores = async (req, res) => {
+  const stores = await Store.find();
+  res.render('stores', {title: "Stores", stores})
+}
