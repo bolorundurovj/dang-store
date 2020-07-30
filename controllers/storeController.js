@@ -1,5 +1,12 @@
 const mongoose = require("mongoose");
 const Store = mongoose.model("Store");
+const multer = require("multer");
+const multerOptions = {
+  storage: multer.memoryStorage(),
+  fileFilter(req, file, next) {
+    const isPhoto = file.mimetype.startsWith('image/');
+  }
+}
 
 exports.homePage = (req, res) => {
   res.render("index", { title: "Home" });
@@ -42,7 +49,7 @@ exports.editStore = async (req, res) => {
 exports.updateStore = async (req, res) => {
   //set location data to type of point
   req.body.location.type = 'Point';
-  
+
   const store = await Store.findOneAndUpdate({ _id: req.params.id }, req.body, {
     new: true,
     runValidators: true,
