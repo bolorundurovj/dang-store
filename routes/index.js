@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const storeController = require("../controllers/storeController");
+const userController = require("../controllers/userController");
 const { catchErrors } = require("../handlers/errorHandlers");
 
 // Do work here
@@ -19,10 +20,16 @@ router.post(
   catchErrors(storeController.resize),
   catchErrors(storeController.createStore)
 );
-router.post("/add/:id",
-    storeController.upload,
-    catchErrors(storeController.resize),
-    catchErrors(storeController.updateStore));
+router.post(
+  "/add/:id",
+  storeController.upload,
+  catchErrors(storeController.resize),
+  catchErrors(storeController.updateStore)
+);
 
+router.get("/login", userController.loginForm);
+router.get("/register", userController.registerForm);
+
+router.post("/register", userController.validateRegister)
 
 module.exports = router;

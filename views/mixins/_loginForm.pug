@@ -1,0 +1,8 @@
+mixin loginForm()
+    form(action='/login' method="POST" class="card")
+        h2= title
+        label(for="email") Email Address
+        input(type="email" name="email")
+        label(for="password") Password
+        input(type="password" name="password")
+        input(type="submit", value="Log In --<" class="button")
