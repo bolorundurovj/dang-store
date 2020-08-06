@@ -1,20 +1,20 @@
 const mongoose = require("mongoose");
 const Store = mongoose.model("Store");
 const multer = require("multer");
-const jimp = require('jimp');
-const uuid = require('uuid');
+const jimp = require("jimp");
+const uuid = require("uuid");
 
 const multerOptions = {
   storage: multer.memoryStorage(),
   fileFilter(req, file, next) {
-    const isPhoto = file.mimetype.startsWith('image/');
-    if(isPhoto) {
-      next(null, true)
+    const isPhoto = file.mimetype.startsWith("image/");
+    if (isPhoto) {
+      next(null, true);
     } else {
-      ({message: 'That filetype isn\'t allowed!'}, false)
+      ({ message: "That filetype isn't allowed!" }, false);
     }
-  }
-}
+  },
+};
 
 exports.homePage = (req, res) => {
   res.render("index", { title: "Home" });
@@ -24,14 +24,14 @@ exports.addStore = (req, res) => {
   res.render("editStore", { title: " Add Store" });
 };
 
-exports.upload = multer(multerOptions).single('photo');
+exports.upload = multer(multerOptions).single("photo");
 
 exports.resize = async (req, res, next) => {
-  if(!req.file) {
+  if (!req.file) {
     next(); // skip
     return;
   }
-  const extension = req.file.mimetype.split('/')[1];
+  const extension = req.file.mimetype.split("/")[1];
   req.body.photo = `${uuid.v4()}.${extension}`;
   //resize
   const photo = await jimp.read(req.file.buffer);
@@ -39,7 +39,7 @@ exports.resize = async (req, res, next) => {
   await photo.write(`./public/uploads/${req.body.photo}`);
   //once we have written the photo to our file system, keep going!
   next();
-}
+};
 
 exports.createStore = async (req, res) => {
   req.body.author = req.user._id;
@@ -69,9 +69,9 @@ exports.getStores = async (req, res) => {
 
 const confirmOwner = (store, user) => {
   if (!store.author.equals(user._id)) {
-    throw Error('You must own the store to edit it!');
+    throw Error("You must own the store to edit it!");
   }
-}
+};
 
 exports.editStore = async (req, res) => {
   const store = await Store.findOne({ _id: req.params.id });
@@ -81,7 +81,7 @@ exports.editStore = async (req, res) => {
 
 exports.updateStore = async (req, res) => {
   //set location data to type of point
-  req.body.location.type = 'Point';
+  req.body.location.type = "Point";
 
   const store = await Store.findOneAndUpdate({ _id: req.params.id }, req.body, {
     new: true,
@@ -95,21 +95,45 @@ exports.updateStore = async (req, res) => {
 };
 
 exports.getStoreBySlug = async (req, res, next) => {
-  const store = await (await Store.findOne({slug: req.params.slug})).populate('author');
-  if(!store) {
+  const store = await (await Store.findOne({ slug: req.params.slug })).populate(
+    "author"
+  );
+  if (!store) {
     next();
     return;
   }
-  res.render('store', {store, title: store.name});
-}
+  res.render("store", { store, title: store.name });
+};
 
 exports.getStoresByTag = async (req, res) => {
   const tag = req.params.tag;
-  const tagQuery = tag || {$exists: true};
+  const tagQuery = tag || { $exists: true };
   const tagsPromise = Store.getTagsList();
-  const storesPromise = Store.find({tags: tagQuery});
+  const storesPromise = Store.find({ tags: tagQuery });
 
   const [tags, stores] = await Promise.all([tagsPromise, storesPromise]);
-  
-  res.render('tags', {tags, title: 'Tags', tag, stores});
-}
+
+  res.render("tags", { tags, title: "Tags", tag, stores });
+};
+
+exports.searchStores = async (req, res) => {
+  const stores = await Store
+  // find stores that match
+  .find(
+    {
+      $text: {
+        $search: req.query.q,
+      },
+    },
+    {
+      score: { $meta: "textScore" },
+    }
+  )
+  // then sort them
+  .sort({
+    score: { $meta: "textScore" },
+  })
+  // limit to only 5 results
+  .limit(5);
+  res.json(stores);
+};
