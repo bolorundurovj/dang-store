@@ -1,2 +1,5 @@
 node_modules
 variables.env
+*.log
+.idea
+variables.env.now
