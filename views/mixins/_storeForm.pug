@@ -14,7 +14,7 @@ mixin storeForm(store = {})
         input(type="text" id="lng" name="location[coordinates][0]" value=(store.location && store.location.coordinates[0]) required)
         label(for="lat") Address Lat
         input(type="text" id="lat" name="location[coordinates][1]" value=(store.location && store.location.coordinates[1]) required)
-        - const choices = ['Wifi', 'Open Late', 'Family Friendly', 'Vegetarian', 'Licenced']
+        - const choices = ['Wifi', 'Open Late', 'Family Friendly', 'Vegetarian', 'Licensed']
         - const tags = store.tags || []
         ul.tags
             each choice in choices
