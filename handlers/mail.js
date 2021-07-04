@@ -35,11 +35,3 @@ exports.send = async (options) => {
   const sendMail = promisify(transport.sendMail, transport);
   return sendMail(mailOptions);
 };
-
-// transport.sendMail({
-//   from: "Vee Jay <vee-jay@vj.com>",
-//   to: "randy@southpark.com",
-//   subject: "I am lorde!",
-//   html: "I am <strong>lorde</strong> ya ya ya",
-//   text: "I am **lorde** ya ya ya",
-// });
