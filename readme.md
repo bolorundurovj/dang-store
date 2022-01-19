@@ -1,6 +1,6 @@
 ## What is this?
 
-Just you wait folks!
+A simple ecommerce application built in NodeJS
 
 ## Sample Data
 
