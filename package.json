@@ -54,7 +54,7 @@
     "babel-preset-env": "^1.6.0",
     "concurrently": "3.4.0",
     "css-loader": "6.7.3",
-    "extract-text-webpack-plugin": "2.1.0",
+    "extract-text-webpack-plugin": "2.1.2",
     "node-sass": "^7.0.0",
     "nodemon": "^2.0.20",
     "now": "^6.4.1",
